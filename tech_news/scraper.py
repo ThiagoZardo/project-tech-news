@@ -20,7 +20,13 @@ def fetch(url):
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    cards = []
+
+    for card in selector.css('div.cs-overlay'):
+        text = card.css('a::attr(href)').get()
+        cards.append(text)
+    return cards
 
 
 # Requisito 3
