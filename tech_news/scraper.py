@@ -46,8 +46,8 @@ def scrape_noticia(html_content):
     tags = selector.css('.post-tags > ul > li > a::text').getall()
     summary = selector.css(
         '.entry-content > p:nth-of-type(1) *::text').getall()
-    comments_count = selector.css('.title-block::text')
-    category = selector.css('.label::text')
+    comments_count = len(selector.css('.comment-author'))
+    category = selector.css('span.label::text').get()
 
     articles = {
         'url': url,
