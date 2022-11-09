@@ -1,6 +1,9 @@
 import requests
 from parsel import Selector
 import time
+from tech_news.database import (
+    create_news
+)
 
 
 # Requisito 1
@@ -46,7 +49,7 @@ def scrape_noticia(html_content):
     tags = selector.css('.post-tags > ul > li > a::text').getall()
     summary = selector.css(
         '.entry-content > p:nth-of-type(1) *::text').getall()
-    comments_count = len(selector.css('.comment-author'))
+    comments_count = len(selector.css('.comment-author').getall())
     category = selector.css('span.label::text').get()
 
     articles = {
@@ -64,13 +67,15 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    quantity_news = 0
-    while quantity_news < amount:
-        url = 'https://blog.betrybe.com'
+    list_news = []
+    list_newsletter = []
+    url = 'https://blog.betrybe.com'
+    while len(list_news) < amount:
         html_content = fetch(url)
-        list_news = scrape_novidades(html_content)
-        next_page = scrape_next_page_link(list_news)
-        newsletter = scrape_noticia(list_news)
-        fetch(next_page)
-        quantity_news += 1
-    return newsletter
+        list_news.extend(scrape_novidades(html_content))
+        url = scrape_next_page_link(html_content)
+    for new in list_news[:amount]:
+        newsletter = fetch(new)
+        list_newsletter.append(scrape_noticia(newsletter))
+    create_news(list_newsletter)
+    return list_newsletter
