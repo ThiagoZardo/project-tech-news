@@ -1,5 +1,5 @@
 from datetime import datetime
-from tech_news.database import(search_news)
+from tech_news.database import (search_news)
 
 
 # Requisito 6
@@ -24,16 +24,15 @@ def search_by_date(date):
             list_news.append((new['title'], new['url']))
 
         return list_news
-    except:
+    except ValueError:
         raise ValueError('Data inválida')
-
 
 
 # Requisito 8
 def search_by_tag(tag):
     list_news = []
     newlastter = search_news(
-        {'tags': {'$elemMatch': {'$regex': tag, '$options': 'i'} } }
+        {'tags': {'$elemMatch': {'$regex': tag, '$options': 'i'}}}
     )
     for new in newlastter:
         list_news.append((new['title'], new['url']))
