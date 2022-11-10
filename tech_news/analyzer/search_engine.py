@@ -1,3 +1,4 @@
+from datetime import datetime
 from tech_news.database import (
     search_news
 )
@@ -7,7 +8,7 @@ from tech_news.database import (
 def search_by_title(title):
     list_news = []
     newlastter = search_news(
-        {"title": {"$regex": f"{title}", "$options": "i"}}
+        {'title': {'$regex': title, '$options': 'i'}}
     )
     for new in newlastter:
         list_news.append((new['title'], new['url']))
@@ -17,12 +18,33 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    try:
+        datetime.strptime(date, "%d-%m-%Y")
+
+        list_news = []
+        newlastter = search_news(
+            {'timestamp': {'$regex': '{data}'}}
+        )
+        for new in newlastter:
+            list_news.append((new['title'], new['url']))
+
+        return list_news
+
+    except:
+        raise ValueError('Data inválida')
 
 
 # Requisito 8
 def search_by_tag(tag):
-    """Seu código deve vir aqui"""
+    list_news = []
+    newlastter = search_news(
+        {'tags': {'$elemMatch': {'$regex': tag, '$options': 'i'} } }
+    )
+    for new in newlastter:
+        list_news.append((new['title'], new['url']))
+
+    return list_news
+
 
 
 # Requisito 9
